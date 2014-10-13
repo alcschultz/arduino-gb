@@ -22,7 +22,7 @@ boolean isFiring = false;
 boolean stateOverloaded = false;
 ulong overloadedStart = 0;
 ulong firingStart = 0;
-boolean initialised = false;
+boolean initialized = false;
 boolean firingSound = true; // flag to flip between 2 types of firing sound
 
 // Shift Register config
@@ -123,7 +123,7 @@ void setup()
   overload_booster.disable();
   overload_bargraph.disable();
   firing_laser.disable();
-  normal_cyclotron.disable(); // enabled when initialised
+  normal_cyclotron.disable(); // enabled when initialized
   normal_bargraph_cycle.disable(); // enbled when bargraph full
 
   shifter.clear(); // set all pins on the shift register chain to LOW
@@ -141,10 +141,10 @@ void loop()
   bool canChangeSoundState = !wave.isplaying || themePlaying;
 
   // Check firing
-  isFiring = initialised && (digitalRead(TRIGGER_SWITCH) == LOW);
+  isFiring = initialized && (digitalRead(TRIGGER_SWITCH) == LOW);
   if (!isFiring) {
     if (!stateOverloaded && firingStart > 0) {
-      wave.playfile("p_stop.wav");
+      wave.playfile("alt0_t2.wav");
     }
     firingStart = 0;
     firing_laser.disable();
@@ -153,15 +153,14 @@ void loop()
     firingStart = millis();
     firing_laser.enable();
     if (firingSound) {
-      wave.playfile("fire.wav");
+      wave.playfile("fire0_h.wav");
     } else {
-      wave.playfile("fire2.wav");
+      wave.playfile("fire0_b.wav");
     }
     themePlaying = false;
     firingSound = !firingSound;
   }
 
-  if (!anythingPlaying && themePlay) {
     String filename = "theme";
     filename += curTheme;
     filename += ".wav";
@@ -183,7 +182,6 @@ void loop()
 
   // Overload start
   if (!stateOverloaded && isFiring && curLevel <= 0) {
-    wave.playfile("p_stop.wav");
     themePlaying = false;
 
     stateOverloaded = true;
@@ -266,7 +264,7 @@ void boosterNormal()
   }
 
   // Speed is dependant on current level
-  if (initialised) {
+  if (initialized) {
     normal_booster.setInterval(BOOSTER_LEVELS[curLevel]);
   }
 
@@ -377,7 +375,7 @@ void bargraphNormal()
        curLevel = MAX_LEVELS;
        normal_bargraph_cycle.enable();
        normal_cyclotron.enable();
-       initialised = true;
+       initialized = true;
     }
     else if (curLevel < MAX_LEVELS) {
        curLevel++;
