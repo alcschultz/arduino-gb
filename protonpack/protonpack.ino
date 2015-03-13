@@ -130,7 +130,7 @@ void setup()
   shifter.write();
   
   wave.setup();
-  wave.playfile("p_start.wav"); // plays only once on first load
+  wave.playfile("pwrup.wav"); // plays only once on first load
 }
 
 // Main loop
@@ -139,9 +139,10 @@ void loop()
   bool themePlay = digitalRead(THEME_SWITCH) == LOW;
   bool anythingPlaying = wave.isplaying;
   bool canChangeSoundState = !wave.isplaying || themePlaying;
-
-  // Check firing
-  isFiring = initialized && (digitalRead(TRIGGER_SWITCH) == LOW);
+//  initialized = true;
+//
+//  // Check firing
+  isFiring = initialized && (digitalRead(TRIGGER_SWITCH) == HIGH);
   if (!isFiring) {
     if (!stateOverloaded && firingStart > 0) {
       wave.playfile("alt0_t2.wav");
@@ -150,6 +151,7 @@ void loop()
     firing_laser.disable();
   }
   else if (firingStart == 0 && !stateOverloaded) { // We just started firing
+    putstring("start fire: ");   
     firingStart = millis();
     firing_laser.enable();
     if (firingSound) {
@@ -161,24 +163,26 @@ void loop()
     firingSound = !firingSound;
   }
 
-    String filename = "theme";
-    filename += curTheme;
-    filename += ".wav";
-    char charBuf[filename.length()+1];
-    filename.toCharArray(charBuf, filename.length()+1);
-    wave.playfile(charBuf);
-
-    themePlaying = true;
-  }
-  if (themePlaying && !themePlay) {
-     wave.stop();
-     themePlaying = false;
-
-     // Switch themes
-     if (++curTheme > 3) {
-       curTheme = 0;
-     }
-  }
+  
+//  if(false) {
+//    String filename = "theme";
+//    filename += curTheme;
+//    filename += ".wav";
+//    char charBuf[filename.length()+1];
+//    filename.toCharArray(charBuf, filename.length()+1);
+//    wave.playfile(charBuf);
+//
+//    themePlaying = true;
+//  }
+//  if (themePlaying && !themePlay) {
+//     wave.stop();
+//     themePlaying = false;
+//
+//     // Switch themes
+//     if (++curTheme > 3) {
+//       curTheme = 0;
+//     }
+//  }
 
   // Overload start
   if (!stateOverloaded && isFiring && curLevel <= 0) {
@@ -186,7 +190,7 @@ void loop()
 
     stateOverloaded = true;
     resetAllLights();
-
+//
     firing_laser.disable();
     normal_booster.disable();
     normal_cyclotron.disable();
